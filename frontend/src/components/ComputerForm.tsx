@@ -236,12 +236,23 @@ export const ComputerForm: React.FC<ComputerFormProps> = ({
                   className="w-full px-3 py-2 border border-gray-300 rounded"
                   required={items.length === 0}
                 />
-                {openCategory === category && <div className="absolute left-0 top-full z-10 mt-1 max-h-48 w-[calc(100%-5.5rem)] overflow-y-auto border border-gray-300 bg-white shadow-lg">
-                  {availableProducts.map((product) => <button key={product.id} type="button" onMouseDown={(event) => event.preventDefault()} onClick={() => selectProduct(category, product.name)} className="block w-full border-b border-gray-100 px-3 py-2 text-left text-sm hover:bg-blue-50">
-                    <span className="font-medium">{product.name}</span><span className="ml-2 text-gray-600">{product.brandName} {product.model}</span>
-                  </button>)}
+                {openCategory === category && (
+                  <div className="absolute left-0 top-full z-10 mt-1 max-h-48 w-[calc(100%-5.5rem)] overflow-y-auto border border-gray-300 bg-white shadow-lg">
+                    {availableProducts.map((product) => (
+                      <button
+                        key={product.id}
+                        type="button"
+                        onMouseDown={(event) => event.preventDefault()}
+                        onClick={() => selectProduct(category, product.name)}
+                        className="block w-full border-b border-gray-100 px-3 py-2 text-left text-sm hover:bg-blue-50"
+                      >
+                        <span className="font-medium">{product.name}</span>
+                        <span className="ml-2 text-gray-600">{product.brandName} {product.model}</span>
+                      </button>
+                    ))}
                   {availableProducts.length === 0 && <p className="px-3 py-2 text-sm text-gray-500">No matching products.</p>}
-                </div>}
+                  </div>
+                )}
                 <button type="button" onClick={() => selectProduct(category, query)} className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">
                   {supportsMultiple ? 'Add' : 'Select'}
                 </button>

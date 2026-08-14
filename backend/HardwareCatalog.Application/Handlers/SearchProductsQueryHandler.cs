@@ -114,8 +114,12 @@ public class SearchProductsQueryHandler : IRequestHandler<SearchProductsQuery, L
     {
         var ignoredWords = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
-            "show", "return", "find", "list", "get", "display", "give", "bring", "me", "with", "and", "the", "a", "an", "more", "than", "greater", "over", "above", "at", "least", "minimum", "of",
-            "disk", "disks", "hard", "drive", "drives", "storage", "ssd", "ssds", "hdd", "hdds", "memory", "memories", "ram", "processor", "processors", "cpu", "cpus", "power", "supply", "supplies", "powersupply", "powersupplies", "psu", "psus", "port", "ports", "externalport", "externalports", "usb", "graphic", "graphics", "graphiccard", "graphiccards", "gpu", "video", "card", "cards"
+            "show", "return", "find", "list", "get", "display", "give", "bring", "me", "with", "and", "the", "a", "an",
+            "more", "than", "greater", "over", "above", "at", "least", "minimum", "of", "disk", "disks", "hard",
+            "drive", "drives", "storage", "ssd", "ssds", "hdd", "hdds", "memory", "memories", "ram", "processor",
+            "processors", "cpu", "cpus", "power", "supply", "supplies", "powersupply", "powersupplies", "psu", "psus",
+            "port", "ports", "externalport", "externalports", "usb", "graphic", "graphics", "graphiccard", "graphiccards",
+            "gpu", "video", "card", "cards"
         };
 
         return Regex.Matches(query, @"[a-z]+")
