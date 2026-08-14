@@ -158,27 +158,25 @@ export const ComputerForm: React.FC<ComputerFormProps> = ({
 
         <div>
           <label className="block font-bold mb-2">Weight *</label>
-          <input
-            type="number"
-            step="0.1"
-            value={weight}
-            onChange={(e) => setWeight(parseFloat(e.target.value))}
-            className="w-full px-3 py-2 border border-gray-300 rounded"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block font-bold mb-2">Weight Unit *</label>
-          <select
-            value={weightUnit}
-            onChange={(e) => setWeightUnit(e.target.value as WeightUnit)}
-            className="w-full px-3 py-2 border border-gray-300 rounded"
-          >
-            {Object.values(WeightUnit).map(u => (
-              <option key={u} value={u}>{u}</option>
-            ))}
-          </select>
+          <div className="grid grid-cols-2 gap-2">
+            <input
+              type="number"
+              step="0.1"
+              value={weight}
+              onChange={(e) => setWeight(parseFloat(e.target.value))}
+              className="w-full px-3 py-2 border border-gray-300 rounded"
+              required
+            />
+            <select
+              value={weightUnit}
+              onChange={(e) => setWeightUnit(e.target.value as WeightUnit)}
+              className="w-full px-3 py-2 border border-gray-300 rounded"
+            >
+              {Object.values(WeightUnit).map(u => (
+                <option key={u} value={u}>{u}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div>
