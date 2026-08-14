@@ -1,0 +1,58 @@
+{
+  "// Hardware Catalog VS Code Settings": "Workspace configuration for hardware catalog development",
+  
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+
+  "// Copilot Settings": "AI assistant configuration",
+  "github.copilot.enable": {
+    "*": true
+  },
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+  "chat.useAgentsMdFile": true,
+  "chat.instructionsFilesLocations": [
+    ".instructions.md",
+    "copilot-instructions.md",
+    "skills/**/*.md"
+  ],
+  "chat.agentFilesLocations": [
+    "agents/**/*.md"
+  ],
+  "chat.promptFilesLocations": [
+    "prompts/**/*.md"
+  ],
+
+  "// File Associations": "How to handle certain file types",
+  "files.associations": {
+    "*.instructions.md": "markdown",
+    "*SKILL.md": "markdown",
+    "AGENTS.md": "markdown"
+  },
+
+  "// Search Excludes": "Exclude certain patterns from search",
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.git": true
+  },
+
+  "// Files to Exclude": "Hide certain file patterns",
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true
+  },
+
+  "// Editor Preferences": "General editor configuration",
+  "editor.rulers": [80, 120],
+  "editor.trimAutoWhitespace": true,
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "files.trimFinalNewlines": true,
+  "files.insertFinalNewline": true
+}

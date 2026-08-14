@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="HardwareCatalog.Application/HardwareCatalog.Application.csproj" />
+  <Project Path="HardwareCatalog.Domain/HardwareCatalog.Domain.csproj" />
+  <Project Path="HardwareCatalog.Infrastructure/HardwareCatalog.Infrastructure.csproj" />
+  <Project Path="HardwareCatalog.WebApi/HardwareCatalog.WebApi.csproj" />
+  <Project Path="HardwareCatalog.Tests/HardwareCatalog.Tests.csproj" />
+</Solution>

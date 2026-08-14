@@ -1,0 +1,43 @@
+{
+  "projectName": "Hardware Catalog",
+  "projectDescription": "AI-enhanced hardware catalog system with customizable agent and skill support",
+
+  "copilot": {
+    "enabled": true,
+    "instructionsFile": ".instructions.md",
+    "agentConfigFile": ".agent.md",
+    "skillsDirectory": "skills",
+    "agentsDirectory": "agents",
+    "promptsDirectory": "prompts"
+  },
+
+  "agents": {
+    "enabled": true,
+    "registry": "AGENTS.md",
+    "autoLoad": true
+  },
+
+  "skills": {
+    "enabled": true,
+    "autoDiscover": true,
+    "skillDefinitionFormat": "SKILL.md"
+  },
+
+  "codeQuality": {
+    "enforceInstructions": true,
+    "checkConsistency": true,
+    "validateSpecs": true
+  },
+
+  "documentation": {
+    "generateMarkdown": true,
+    "includeExamples": true,
+    "updateOnChange": false
+  },
+
+  "repository": {
+    "type": "hardware-catalog",
+    "visibility": "private",
+    "collaborationMode": "shared"
+  }
+}

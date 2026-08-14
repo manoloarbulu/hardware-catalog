@@ -1,0 +1,6 @@
+@HardwareCatalog.WebApi_HostAddress = http://localhost:5199
+
+GET {{HardwareCatalog.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
