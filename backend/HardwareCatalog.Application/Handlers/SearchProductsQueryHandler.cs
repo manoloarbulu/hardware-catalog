@@ -66,27 +66,47 @@ public class SearchProductsQueryHandler : IRequestHandler<SearchProductsQuery, L
 
     private static CapacityFilter? ParseCapacityFilter(string query)
     {
-        var match = Regex.Match(query, @"\b(?<comparison>more than|greater than|over|above|at least|minimum of)\s+(?<amount>\d+(?:\.\d+)?)\s*(?<unit>tb|gb|mb)\b");
-        if (!match.Success) return null;
+        var comparisonMatch = Regex.Match(query, @"\b(?<comparison>more than|greater than|over|above|at least|minimum of)\s+(?<amount>\d+(?:\.\d+)?)\s*(?<unit>tb|gb|mb)\b");
+        if (comparisonMatch.Success)
+        {
+            var amount = decimal.Parse(comparisonMatch.Groups["amount"].Value);
+            var unit = ParseUnitOfMeasure(comparisonMatch.Groups["unit"].Value);
+            var inclusive = comparisonMatch.Groups["comparison"].Value is "at least" or "minimum of";
+            return new CapacityFilter(amount, unit, inclusive, true);
+        }
 
-        var amountInGb = ConvertToGb(decimal.Parse(match.Groups["amount"].Value), match.Groups["unit"].Value);
-        var inclusive = match.Groups["comparison"].Value is "at least" or "minimum of";
-        return new CapacityFilter(amountInGb, inclusive);
+        var exactMatch = Regex.Match(query, @"\b(?<amount>\d+(?:\.\d+)?)\s*(?<unit>tb|gb|mb)\b");
+        if (!exactMatch.Success) return null;
+
+        return new CapacityFilter(
+            decimal.Parse(exactMatch.Groups["amount"].Value),
+            ParseUnitOfMeasure(exactMatch.Groups["unit"].Value),
+            true,
+            false);
     }
 
     private static bool MatchesCapacity(Product product, CapacityFilter filter)
     {
-        var match = Regex.Match($"{product.Name} {product.Model}", @"(?<amount>\d+(?:\.\d+)?)\s*(?<unit>tb|gb|mb)\b", RegexOptions.IgnoreCase);
-        if (!match.Success) return false;
+        if (!filter.IsComparison)
+            return product.UnitOfMeasure == filter.Unit && product.Value == filter.Amount;
 
-        var capacityInGb = ConvertToGb(decimal.Parse(match.Groups["amount"].Value), match.Groups["unit"].Value);
-        return filter.Inclusive ? capacityInGb >= filter.AmountInGb : capacityInGb > filter.AmountInGb;
+        var productCapacity = ConvertToGb(product.Value, product.UnitOfMeasure);
+        var filterCapacity = ConvertToGb(filter.Amount, filter.Unit);
+        return filter.Inclusive ? productCapacity >= filterCapacity : productCapacity > filterCapacity;
     }
 
-    private static decimal ConvertToGb(decimal amount, string unit) => unit.ToLowerInvariant() switch
+    private static UnitOfMeasure ParseUnitOfMeasure(string unit) => unit.ToLowerInvariant() switch
     {
-        "tb" => amount * 1024,
-        "mb" => amount / 1024,
+        "tb" => UnitOfMeasure.TB,
+        "gb" => UnitOfMeasure.GB,
+        "mb" => UnitOfMeasure.MB,
+        _ => throw new ArgumentOutOfRangeException(nameof(unit), unit, "Unsupported capacity unit.")
+    };
+
+    private static decimal ConvertToGb(decimal amount, UnitOfMeasure unit) => unit switch
+    {
+        UnitOfMeasure.TB => amount * 1024,
+        UnitOfMeasure.MB => amount / 1024,
         _ => amount
     };
 
@@ -94,8 +114,12 @@ public class SearchProductsQueryHandler : IRequestHandler<SearchProductsQuery, L
     {
         var ignoredWords = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
-            "show", "return", "find", "list", "get", "display", "give", "bring", "me", "with", "and", "the", "a", "an", "more", "than", "greater", "over", "above", "at", "least", "minimum", "of",
-            "disk", "disks", "hard", "drive", "drives", "storage", "ssd", "ssds", "hdd", "hdds", "memory", "memories", "ram", "processor", "processors", "cpu", "cpus", "power", "supply", "supplies", "powersupply", "powersupplies", "psu", "psus", "port", "ports", "externalport", "externalports", "usb", "graphic", "graphics", "graphiccard", "graphiccards", "gpu", "video", "card", "cards"
+            "show", "return", "find", "list", "get", "display", "give", "bring", "me", "with", "and", "the", "a", "an",
+            "more", "than", "greater", "over", "above", "at", "least", "minimum", "of", "disk", "disks", "hard",
+            "drive", "drives", "storage", "ssd", "ssds", "hdd", "hdds", "memory", "memories", "ram", "processor",
+            "processors", "cpu", "cpus", "power", "supply", "supplies", "powersupply", "powersupplies", "psu", "psus",
+            "port", "ports", "externalport", "externalports", "usb", "graphic", "graphics", "graphiccard", "graphiccards",
+            "gpu", "video", "card", "cards"
         };
 
         return Regex.Matches(query, @"[a-z]+")
@@ -104,7 +128,7 @@ public class SearchProductsQueryHandler : IRequestHandler<SearchProductsQuery, L
             .Distinct(StringComparer.OrdinalIgnoreCase);
     }
 
-    private sealed record CapacityFilter(decimal AmountInGb, bool Inclusive);
+    private sealed record CapacityFilter(decimal Amount, UnitOfMeasure Unit, bool Inclusive, bool IsComparison);
 
     private static ProductDto MapToDto(HardwareCatalog.Domain.Entities.Product product)
     {

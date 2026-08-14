@@ -54,7 +54,16 @@ public class ProductsController : ControllerBase
         if (request.Value <= 0)
             return BadRequest(new { error = "Value must be greater than 0." });
 
-        var product = new Product { Id = Guid.NewGuid(), Name = request.Name, Category = request.Category, UnitOfMeasure = request.UnitOfMeasure, Value = request.Value, BrandId = request.BrandId, Model = request.Model };
+        var product = new Product
+        {
+            Id = Guid.NewGuid(),
+            Name = request.Name,
+            Category = request.Category,
+            UnitOfMeasure = request.UnitOfMeasure,
+            Value = request.Value,
+            BrandId = request.BrandId,
+            Model = request.Model
+        };
         _dbContext.Products.Add(product);
         await _dbContext.SaveChangesAsync();
         return CreatedAtAction(nameof(GetAll), new { product.Id }, await MapProduct(product.Id));
@@ -120,8 +129,21 @@ public class ProductsController : ControllerBase
 
     private async Task<ProductDto> MapProduct(Guid id)
     {
-        var product = await _dbContext.Products.Include(item => item.Brand).SingleAsync(item => item.Id == id);
-        return new ProductDto { Id = product.Id, Category = product.Category, Name = product.Name, UnitOfMeasure = product.UnitOfMeasure, Value = product.Value, BrandId = product.BrandId, Model = product.Model, BrandName = product.Brand?.Name };
+        var product = await _dbContext.Products
+            .Include(item => item.Brand)
+            .SingleAsync(item => item.Id == id);
+
+        return new ProductDto
+        {
+            Id = product.Id,
+            Category = product.Category,
+            Name = product.Name,
+            UnitOfMeasure = product.UnitOfMeasure,
+            Value = product.Value,
+            BrandId = product.BrandId,
+            Model = product.Model,
+            BrandName = product.Brand?.Name
+        };
     }
 }
 
