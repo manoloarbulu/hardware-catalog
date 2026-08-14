@@ -36,6 +36,7 @@ export interface Product {
   category: ProductCategory;
   name: string;
   unitOfMeasure: UnitOfMeasure;
+  value: number;
   brandId: string;
   model: string;
   brandName?: string;

@@ -112,6 +112,7 @@ public class UpdateComputerCommandHandler : IRequestHandler<UpdateComputerComman
                         Category = cp.Product.Category,
                         Name = cp.Product.Name,
                         UnitOfMeasure = cp.Product.UnitOfMeasure,
+                        Value = cp.Product.Value,
                         BrandId = cp.Product.BrandId,
                         Model = cp.Product.Model,
                         BrandName = cp.Product.Brand?.Name

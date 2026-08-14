@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import api, { Brand, Product, ProductCategory, ProductInput, UnitOfMeasure } from '../services/api';
 
-const emptyProduct = (): ProductInput => ({ name: '', model: '', category: ProductCategory.Processor, unitOfMeasure: UnitOfMeasure.Units, brandId: '' });
+const emptyProduct = (): ProductInput => ({ name: '', model: '', category: ProductCategory.Processor, unitOfMeasure: UnitOfMeasure.Units, value: 1, brandId: '' });
 
 export const ProductMaintenance = () => {
   const [brands, setBrands] = useState<Brand[]>([]);
@@ -41,9 +41,10 @@ export const ProductMaintenance = () => {
   }, []);
 
   const openCreate = () => { setEditing(null); setFormOpen(true); setForm({ ...emptyProduct(), category: category ?? ProductCategory.Processor, brandId: brandId ?? brands[0]?.id ?? '' }); setMessage(null); };
-  const openEdit = (product: Product) => { setEditing(product); setFormOpen(true); setForm({ name: product.name, model: product.model, category: product.category, unitOfMeasure: product.unitOfMeasure, brandId: product.brandId }); setMessage(null); };
+  const openEdit = (product: Product) => { setEditing(product); setFormOpen(true); setForm({ name: product.name, model: product.model, category: product.category, unitOfMeasure: product.unitOfMeasure, value: product.value, brandId: product.brandId }); setMessage(null); };
   const save = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (!Number.isInteger(form.value) || form.value <= 0) { setMessage('Value must be a whole number greater than 0.'); return; }
     try {
       const saved = editing ? await api.updateProduct(editing.id, form) : await api.createProduct(form);
       setProducts((current) => editing ? current.map((product) => product.id === saved.id ? saved : product) : [...current, saved]);
@@ -84,9 +85,14 @@ export const ProductMaintenance = () => {
       <label className="block font-semibold">Category
         <select value={form.category} onChange={(event) => setForm({ ...form, category: event.target.value as ProductCategory })} disabled={Boolean(editing)} className="mt-1 w-full border border-gray-300 px-3 py-2 rounded disabled:bg-gray-100 disabled:text-gray-500">{Object.values(ProductCategory).map((item) => <option key={item}>{item}</option>)}</select>
       </label>
-      <label className="block font-semibold">Unit of Measure
-        <select value={form.unitOfMeasure} onChange={(event) => setForm({ ...form, unitOfMeasure: event.target.value as UnitOfMeasure })} className="mt-1 w-full border border-gray-300 px-3 py-2 rounded">{Object.values(UnitOfMeasure).map((item) => <option key={item}>{item}</option>)}</select>
-      </label>
+      <div className="grid grid-cols-2 gap-3">
+        <label className="block font-semibold">Unit of Measure
+          <select value={form.unitOfMeasure} onChange={(event) => setForm({ ...form, unitOfMeasure: event.target.value as UnitOfMeasure, value: 1 })} className="mt-1 w-full border border-gray-300 px-3 py-2 rounded">{Object.values(UnitOfMeasure).map((item) => <option key={item}>{item}</option>)}</select>
+        </label>
+        <label className="block font-semibold">Value
+          <input type="number" min={1} step={1} value={form.value} onChange={(event) => setForm({ ...form, value: parseInt(event.target.value, 10) })} className="mt-1 w-full border border-gray-300 px-3 py-2 rounded" required />
+        </label>
+      </div>
       <label className="block font-semibold">Brand
         <select value={form.brandId} onChange={(event) => setForm({ ...form, brandId: event.target.value })} className="mt-1 w-full border border-gray-300 px-3 py-2 rounded" required><option value="">Select a brand</option>{brands.map((brand) => <option key={brand.id} value={brand.id}>{brand.name}</option>)}</select>
       </label>

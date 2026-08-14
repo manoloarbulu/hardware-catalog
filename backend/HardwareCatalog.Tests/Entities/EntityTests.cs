@@ -114,6 +114,7 @@ public class ProductEntityTests
             Name = "Test Memory",
             Category = category,
             UnitOfMeasure = unitOfMeasure,
+            Value = 16,
             BrandId = brandId,
             Model = "DDR5-4800"
         };
@@ -143,6 +144,7 @@ public class ProductEntityTests
             Name = "Test Product",
             Category = category,
             UnitOfMeasure = UnitOfMeasure.Units,
+            Value = 1,
             BrandId = Guid.NewGuid(),
             Model = "Model"
         };

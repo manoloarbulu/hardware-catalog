@@ -114,6 +114,7 @@ public class SearchProductsQueryHandler : IRequestHandler<SearchProductsQuery, L
             Category = product.Category,
             Name = product.Name,
             UnitOfMeasure = product.UnitOfMeasure,
+            Value = product.Value,
             BrandId = product.BrandId,
             Model = product.Model,
             BrandName = product.Brand?.Name
