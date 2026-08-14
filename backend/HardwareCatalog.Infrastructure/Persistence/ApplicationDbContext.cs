@@ -42,6 +42,8 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.Model).IsRequired().HasMaxLength(200);
             entity.Property(e => e.Category).IsRequired();
             entity.Property(e => e.UnitOfMeasure).IsRequired();
+            entity.Property(e => e.Value).IsRequired();
+            entity.ToTable(t => t.HasCheckConstraint("CK_Product_Value_Positive", "[Value] > 0"));
             entity.HasOne(e => e.Brand)
                 .WithMany(b => b.Products)
                 .HasForeignKey(e => e.BrandId)

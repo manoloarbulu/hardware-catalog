@@ -11,6 +11,7 @@ public class Product
     public required ProductCategory Category { get; set; }
     public required string Name { get; set; }
     public required UnitOfMeasure UnitOfMeasure { get; set; }
+    public required int Value { get; set; }
     public Guid BrandId { get; set; }
     public required string Model { get; set; }
 

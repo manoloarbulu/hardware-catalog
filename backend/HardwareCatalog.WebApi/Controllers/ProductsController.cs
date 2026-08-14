@@ -40,6 +40,7 @@ public class ProductsController : ControllerBase
             Category = product.Category,
             Name = product.Name,
             UnitOfMeasure = product.UnitOfMeasure,
+            Value = product.Value,
             BrandId = product.BrandId,
             Model = product.Model,
             BrandName = product.Brand!.Name
@@ -50,7 +51,10 @@ public class ProductsController : ControllerBase
     [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
     public async Task<ActionResult<ProductDto>> Create([FromBody] ProductRequest request)
     {
-        var product = new Product { Id = Guid.NewGuid(), Name = request.Name, Category = request.Category, UnitOfMeasure = request.UnitOfMeasure, BrandId = request.BrandId, Model = request.Model };
+        if (request.Value <= 0)
+            return BadRequest(new { error = "Value must be greater than 0." });
+
+        var product = new Product { Id = Guid.NewGuid(), Name = request.Name, Category = request.Category, UnitOfMeasure = request.UnitOfMeasure, Value = request.Value, BrandId = request.BrandId, Model = request.Model };
         _dbContext.Products.Add(product);
         await _dbContext.SaveChangesAsync();
         return CreatedAtAction(nameof(GetAll), new { product.Id }, await MapProduct(product.Id));
@@ -59,6 +63,9 @@ public class ProductsController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<ActionResult<ProductDto>> Update(Guid id, [FromBody] ProductRequest request)
     {
+        if (request.Value <= 0)
+            return BadRequest(new { error = "Value must be greater than 0." });
+
         var product = await _dbContext.Products.FindAsync(id);
         if (product is null) return NotFound();
         if (product.Category != request.Category)
@@ -66,6 +73,7 @@ public class ProductsController : ControllerBase
 
         product.Name = request.Name;
         product.UnitOfMeasure = request.UnitOfMeasure;
+        product.Value = request.Value;
         product.BrandId = request.BrandId;
         product.Model = request.Model;
         await _dbContext.SaveChangesAsync();
@@ -113,7 +121,7 @@ public class ProductsController : ControllerBase
     private async Task<ProductDto> MapProduct(Guid id)
     {
         var product = await _dbContext.Products.Include(item => item.Brand).SingleAsync(item => item.Id == id);
-        return new ProductDto { Id = product.Id, Category = product.Category, Name = product.Name, UnitOfMeasure = product.UnitOfMeasure, BrandId = product.BrandId, Model = product.Model, BrandName = product.Brand?.Name };
+        return new ProductDto { Id = product.Id, Category = product.Category, Name = product.Name, UnitOfMeasure = product.UnitOfMeasure, Value = product.Value, BrandId = product.BrandId, Model = product.Model, BrandName = product.Brand?.Name };
     }
 }
 
@@ -122,6 +130,7 @@ public class ProductRequest
     public required ProductCategory Category { get; set; }
     public required string Name { get; set; }
     public required UnitOfMeasure UnitOfMeasure { get; set; }
+    public required int Value { get; set; }
     public required Guid BrandId { get; set; }
     public required string Model { get; set; }
 }

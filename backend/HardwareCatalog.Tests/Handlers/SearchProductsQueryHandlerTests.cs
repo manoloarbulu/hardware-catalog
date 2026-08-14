@@ -28,6 +28,7 @@ public class SearchProductsQueryHandlerTests
                 Name = "16GB DDR5 Memory",
                 Category = ProductCategory.Memory,
                 UnitOfMeasure = UnitOfMeasure.GB,
+                Value = 16,
                 Model = "DDR5-4800",
                 BrandId = brand.Id
             };
@@ -37,6 +38,7 @@ public class SearchProductsQueryHandlerTests
                 Name = "Intel Processor",
                 Category = ProductCategory.Processor,
                 UnitOfMeasure = UnitOfMeasure.Units,
+                Value = 1,
                 Model = "i7-13700K",
                 BrandId = brand.Id
             };
@@ -78,6 +80,7 @@ public class SearchProductsQueryHandlerTests
                 Name = "Test Product",
                 Category = ProductCategory.Memory,
                 UnitOfMeasure = UnitOfMeasure.GB,
+                Value = 16,
                 Model = "Model",
                 BrandId = brand.Id
             };
@@ -112,9 +115,9 @@ public class SearchProductsQueryHandlerTests
             var brand = new HardwareCatalog.Domain.Entities.Brand { Id = Guid.NewGuid(), Name = "TestBrand" };
             context.Brands.Add(brand);
             context.Products.AddRange(
-                new HardwareCatalog.Domain.Entities.Product { Id = Guid.NewGuid(), Name = "1TB SSD", Category = ProductCategory.Storage, UnitOfMeasure = UnitOfMeasure.TB, Model = "SSD-1TB", BrandId = brand.Id },
-                new HardwareCatalog.Domain.Entities.Product { Id = Guid.NewGuid(), Name = "2TB SSD", Category = ProductCategory.Storage, UnitOfMeasure = UnitOfMeasure.TB, Model = "SSD-2TB", BrandId = brand.Id },
-                new HardwareCatalog.Domain.Entities.Product { Id = Guid.NewGuid(), Name = "32 GB DDR5", Category = ProductCategory.Memory, UnitOfMeasure = UnitOfMeasure.GB, Model = "DDR5-32GB", BrandId = brand.Id });
+                new HardwareCatalog.Domain.Entities.Product { Id = Guid.NewGuid(), Name = "1TB SSD", Category = ProductCategory.Storage, UnitOfMeasure = UnitOfMeasure.TB, Value = 1, Model = "SSD-1TB", BrandId = brand.Id },
+                new HardwareCatalog.Domain.Entities.Product { Id = Guid.NewGuid(), Name = "2TB SSD", Category = ProductCategory.Storage, UnitOfMeasure = UnitOfMeasure.TB, Value = 2, Model = "SSD-2TB", BrandId = brand.Id },
+                new HardwareCatalog.Domain.Entities.Product { Id = Guid.NewGuid(), Name = "32 GB DDR5", Category = ProductCategory.Memory, UnitOfMeasure = UnitOfMeasure.GB, Value = 32, Model = "DDR5-32GB", BrandId = brand.Id });
             await context.SaveChangesAsync();
         }
 
@@ -142,9 +145,9 @@ public class SearchProductsQueryHandlerTests
             var intel = new HardwareCatalog.Domain.Entities.Brand { Id = Guid.NewGuid(), Name = "Intel" };
             context.Brands.AddRange(amd, intel);
             context.Products.AddRange(
-                new HardwareCatalog.Domain.Entities.Product { Id = Guid.NewGuid(), Name = "AMD Ryzen", Category = ProductCategory.Processor, UnitOfMeasure = UnitOfMeasure.Units, Model = "Ryzen 7", BrandId = amd.Id },
-                new HardwareCatalog.Domain.Entities.Product { Id = Guid.NewGuid(), Name = "Intel Core", Category = ProductCategory.Processor, UnitOfMeasure = UnitOfMeasure.Units, Model = "Core i7", BrandId = intel.Id },
-                new HardwareCatalog.Domain.Entities.Product { Id = Guid.NewGuid(), Name = "AMD Radeon", Category = ProductCategory.GraphicCard, UnitOfMeasure = UnitOfMeasure.Units, Model = "RX 7800", BrandId = amd.Id });
+                new HardwareCatalog.Domain.Entities.Product { Id = Guid.NewGuid(), Name = "AMD Ryzen", Category = ProductCategory.Processor, UnitOfMeasure = UnitOfMeasure.Units, Value = 1, Model = "Ryzen 7", BrandId = amd.Id },
+                new HardwareCatalog.Domain.Entities.Product { Id = Guid.NewGuid(), Name = "Intel Core", Category = ProductCategory.Processor, UnitOfMeasure = UnitOfMeasure.Units, Value = 1, Model = "Core i7", BrandId = intel.Id },
+                new HardwareCatalog.Domain.Entities.Product { Id = Guid.NewGuid(), Name = "AMD Radeon", Category = ProductCategory.GraphicCard, UnitOfMeasure = UnitOfMeasure.Units, Value = 1, Model = "RX 7800", BrandId = amd.Id });
             await context.SaveChangesAsync();
         }
 
