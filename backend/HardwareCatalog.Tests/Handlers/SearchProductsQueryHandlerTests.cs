@@ -133,6 +133,36 @@ public class SearchProductsQueryHandlerTests
     }
 
     [Fact]
+    public async Task Handle_WithExactCapacity_ShouldMatchValueAndUnit()
+    {
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseInMemoryDatabase(databaseName: $"SearchProductsExactCapacityTest_{Guid.NewGuid()}")
+            .Options;
+
+        using (var context = new ApplicationDbContext(options))
+        {
+            var brand = new HardwareCatalog.Domain.Entities.Brand { Id = Guid.NewGuid(), Name = "TestBrand" };
+            context.Brands.Add(brand);
+            context.Products.AddRange(
+                new HardwareCatalog.Domain.Entities.Product { Id = Guid.NewGuid(), Name = "1TB SSD", Category = ProductCategory.Storage, UnitOfMeasure = UnitOfMeasure.TB, Value = 1, Model = "SSD-1TB", BrandId = brand.Id },
+                new HardwareCatalog.Domain.Entities.Product { Id = Guid.NewGuid(), Name = "2TB SSD", Category = ProductCategory.Storage, UnitOfMeasure = UnitOfMeasure.TB, Value = 2, Model = "SSD-2TB", BrandId = brand.Id },
+                new HardwareCatalog.Domain.Entities.Product { Id = Guid.NewGuid(), Name = "1GB Memory", Category = ProductCategory.Memory, UnitOfMeasure = UnitOfMeasure.GB, Value = 1, Model = "Memory-1GB", BrandId = brand.Id });
+            await context.SaveChangesAsync();
+        }
+
+        using (var context = new ApplicationDbContext(options))
+        {
+            var handler = new SearchProductsQueryHandler(context);
+            var result = await handler.Handle(new SearchProductsQuery { Query = "show me 1TB" }, CancellationToken.None);
+
+            result.Should().ContainSingle();
+            result.Single().Name.Should().Be("1TB SSD");
+            result.Single().Value.Should().Be(1);
+            result.Single().UnitOfMeasure.Should().Be(UnitOfMeasure.TB);
+        }
+    }
+
+    [Fact]
     public async Task Handle_WithSearchIntentAndBrand_ShouldIgnoreIntentAndMatchBrandWithinCategory()
     {
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
