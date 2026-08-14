@@ -1,0 +1,27 @@
+{
+  "name": "killproc",
+  "displayName": "Kill Process by Port",
+  "description": "Terminates a process running on a specified port",
+  "parameters": [
+    {
+      "name": "port",
+      "description": "The port number to kill the process on (e.g., 5199, 3000, 8080)",
+      "type": "number",
+      "required": true
+    }
+  ],
+  "examples": [
+    {
+      "input": "kill process on port 5199",
+      "description": "Kills the process listening on port 5199"
+    },
+    {
+      "input": "/killproc 3000",
+      "description": "Kills the process listening on port 3000"
+    }
+  ],
+  "implementation": {
+    "type": "powershell",
+    "command": "Get-NetTCPConnection -LocalPort {port} -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue } ; Write-Host \"Process on port {port} terminated successfully\""
+  }
+}
